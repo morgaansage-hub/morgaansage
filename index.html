@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Name — UX/UI Designer</title>
+  <meta name="description" content="Portfolio of Your Name: UX/UI design, Unity games, and graphic design." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Silkscreen&family=DotGothic16&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a class="skip" href="#work">Skip to work</a>
+
+  <!-- ========== HEADER ========== -->
+  <header class="top">
+    <a class="top__name" href="#">yourname</a>
+    <nav class="top__nav" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="assets/resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ========== HERO: pixel field with cut-out blocks ========== -->
+    <section class="hero field" data-field aria-label="Introduction">
+      <div class="block block--name corner-br">
+        <h1 class="giant">YOUR<br />NAME.</h1>
+      </div>
+
+      <p class="block block--label">11.22</p>
+
+      <div class="block block--role corner-tl">
+        <p class="giant giant--sm" aria-label="UX/UI designer">UX/UI<br />DESI<br />GNER.</p>
+      </div>
+
+      <p class="block block--year">2026</p>
+
+      <div class="block block--intro corner-tr">
+        <p>Master's student designing interfaces that feel human: research, flows,
+          and pixel‑level polish. I also make games in Unity, and I started out in graphic design.</p>
+        <p class="pixel">&gt; open to internships · summer 2027</p>
+      </div>
+
+      <a class="block block--cta" href="#work">SEE<br />WORK.</a>
+    </section>
+
+    <!-- ========== WORK ========== -->
+    <section id="work" class="work scan">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="giant giant--sm">SELEC<br />TED WO<br />RK.</h2>
+          <div class="head__side">
+            <p class="pixel-num" id="count">06</p>
+            <div class="filters" role="toolbar" aria-label="Filter projects">
+              <button class="filter is-active" data-filter="all" aria-pressed="true">All</button>
+              <button class="filter" data-filter="ux" aria-pressed="false">UX/UI</button>
+              <button class="filter" data-filter="games" aria-pressed="false">Games / Unity</button>
+              <button class="filter" data-filter="graphic" aria-pressed="false">Graphic</button>
+            </div>
+          </div>
+        </div>
+
+        <ul class="grid" id="grid">
+          <!-- ===== COPY ONE <li> PER PROJECT =====
+               data-cat: ux | games | graphic
+               To use your image, replace the <div class="ph ..."> with:
+               <img src="assets/your-image.jpg" alt="Short description">
+          -->
+          <li class="card card--big" data-cat="ux">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#UX.01</span><div class="ph ph--dither"></div></div>
+              <div class="card__txt">
+                <h3>Project Name: Mobile App</h3>
+                <p>One line on the problem and your impact. "Redesigned onboarding, cutting drop‑off by 30%."</p>
+                <p class="meta"><span>Research · Figma · Prototyping</span><span>2026</span></p>
+              </div>
+            </a>
+          </li>
+
+          <li class="card" data-cat="games">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#GAME.02</span><div class="ph ph--checker"></div></div>
+              <div class="card__txt">
+                <h3>Game Title</h3>
+                <p>Genre, your role, playable on itch.io.</p>
+                <p class="meta"><span>Unity · C#</span><span>2026</span></p>
+              </div>
+            </a>
+          </li>
+
+          <li class="card" data-cat="ux">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#UX.03</span><div class="ph ph--grid"></div></div>
+              <div class="card__txt">
+                <h3>Dashboard Redesign</h3>
+                <p>Short hook about what you solved.</p>
+                <p class="meta"><span>Usability testing</span><span>2025</span></p>
+              </div>
+            </a>
+          </li>
+
+          <li class="card" data-cat="games">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#GAME.04</span><div class="ph ph--scan"></div></div>
+              <div class="card__txt">
+                <h3>Game Jam Entry</h3>
+                <p>48‑hour jam: what you built and learned.</p>
+                <p class="meta"><span>Level design</span><span>2025</span></p>
+              </div>
+            </a>
+          </li>
+
+          <li class="card" data-cat="graphic">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#GFX.05</span><div class="ph ph--dots"></div></div>
+              <div class="card__txt">
+                <h3>Brand Identity</h3>
+                <p>Logo, type system, applications.</p>
+                <p class="meta"><span>Illustrator</span><span>2023</span></p>
+              </div>
+            </a>
+          </li>
+
+          <li class="card" data-cat="graphic">
+            <a href="projects/case-study.html">
+              <div class="sel"><span class="sel__tag">#GFX.06</span><div class="ph ph--stripes"></div></div>
+              <div class="card__txt">
+                <h3>Poster Series</h3>
+                <p>Experimental typography and layout.</p>
+                <p class="meta"><span>Print</span><span>2022</span></p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="about">
+      <div class="wrap about__grid">
+        <div class="about__photo">
+          <div class="sel sel--on"><span class="sel__tag">#ME.jpg</span>
+            <!-- Replace with: <img src="assets/me.jpg" alt="Your Name"> -->
+            <div class="ph ph--dither ph--tall"></div>
+          </div>
+          <span class="stairs" aria-hidden="true"></span>
+        </div>
+
+        <div class="about__txt">
+          <p class="pixel">ABOUT // ME</p>
+          <h2 class="lead">Hi, I'm Your Name. I started in graphic design and moved into UX because I wanted my work to be useful as well as good to look at.</h2>
+          <p>Now I'm a UX/UI master's student at <strong>University</strong>, building games in Unity
+            on the side to explore interaction, feedback, and play.</p>
+
+          <dl class="skills">
+            <div><dt>Design</dt><dd>User research, wireframing, prototyping, design systems, usability testing</dd></div>
+            <div><dt>Tools</dt><dd>Figma, Adobe CC, Unity, Blender, HTML/CSS</dd></div>
+            <div><dt>Code</dt><dd>C#, JavaScript (basic)</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section id="contact" class="contact field" data-field>
+      <div class="block block--contact corner-br">
+        <h2 class="giant">LET'S<br />TALK.</h2>
+      </div>
+      <div class="block block--links corner-tl">
+        <p>Designing something, hiring, or just want to talk about games? Get in touch.</p>
+        <ul>
+          <li><a href="mailto:you@email.com">you@email.com</a></li>
+          <li><a href="https://www.linkedin.com/in/yourname" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+          <li><a href="https://yourname.itch.io" target="_blank" rel="noopener">itch.io ↗</a></li>
+          <li><a href="https://github.com/yourname" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+      </div>
+      <p class="block block--even" aria-hidden="true">SAY<br />HI.</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© 2026 Your Name</span>
+    <span class="pixel">built by hand · github pages</span>
+    <a href="#">back to top ↑</a>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
