@@ -419,3 +419,8 @@ main { position: relative; }
 @media (max-width: 1320px) { .deco-rail { display: none; } }
 @media (max-width: 700px) { .deco--about { width: 60%; left: -10%; } }
 @media print { .deco, .deco-rail { display: none !important; } }
+
+/* Case study: flower in the white column under a step number */
+.step__side { position: relative; }
+.deco--step { position: relative; display: block; width: min(260px, 80%); margin-top: 28px; opacity: .85; }
+@media (max-width: 700px) { .deco--step { display: none; } }
