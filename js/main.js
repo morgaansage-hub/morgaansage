@@ -5,6 +5,22 @@
 const CELL = 9;            // size of each grid square in px
 const THRESHOLD = 0.08;    // higher = fewer filled squares
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------- Motion on/off (shared by every moving grid, remembered per visitor) ----------
+// Default follows the visitor's OS "reduce motion" setting; the button overrides it.
+let motionOn = !reduceMotion;
+try { const saved = localStorage.getItem("motion"); if (saved !== null) motionOn = saved === "on"; } catch (e) {}
+const motionButtons = [];
+function setMotion(on) {
+  motionOn = on;
+  try { localStorage.setItem("motion", on ? "on" : "off"); } catch (e) {}
+  motionButtons.forEach((b) => {
+    b.setAttribute("aria-pressed", String(!on));
+    b.innerHTML = on
+      ? '<span class="motion-toggle__icon" aria-hidden="true">❚❚</span> Pause motion'
+      : '<span class="motion-toggle__icon" aria-hidden="true">▶</span> Play motion';
+  });
+}
 const BLUE = getComputedStyle(document.documentElement).getPropertyValue("--blue").trim() || "#3d6bf5";
 
 // smooth pseudo-noise from layered sine waves
@@ -25,6 +41,13 @@ document.querySelectorAll("[data-field]").forEach((section) => {
   canvas.setAttribute("aria-hidden", "true");
   section.prepend(canvas);
   section.classList.add("has-canvas");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "motion-toggle";
+  btn.title = "Pause or play the background animation";
+  btn.addEventListener("click", () => setMotion(!motionOn));
+  section.append(btn);
+  motionButtons.push(btn);
   const ctx = canvas.getContext("2d");
   const gridLayer = document.createElement("canvas"); // grid lines drawn once, reused every frame
   const gctx = gridLayer.getContext("2d");
@@ -77,7 +100,7 @@ document.querySelectorAll("[data-field]").forEach((section) => {
   function loop(ts) {
     const dt = Math.min(50, ts - (lastTs || ts)); lastTs = ts;
     if (visible) {
-      if (!reduceMotion) t += dt * 0.00035;                 // slow, continuous drift
+      if (motionOn) t += dt * 0.0006;                 // slow, continuous drift
       const k = 1 - Math.pow(0.001, dt / 1000);             // frame-rate independent easing
       mouse.x += (target.x - mouse.x) * Math.min(1, k * 6);
       mouse.y += (target.y - mouse.y) * Math.min(1, k * 6);
@@ -100,6 +123,8 @@ document.querySelectorAll("[data-field]").forEach((section) => {
   resize();
   requestAnimationFrame(loop);
 });
+
+setMotion(motionOn);
 
 // =========================================================
 // 2. "your image here" stickers on placeholders
@@ -133,7 +158,22 @@ function applyFilter(cat) {
     f.classList.toggle("is-active", on);
     f.setAttribute("aria-pressed", on);
   });
-  if (count) count.textContent = String(shown).padStart(2, "0");
+  const total = document.getElementById("total");
+  if (total) total.textContent = "/" + String(cards.length).padStart(2, "0");
+  if (count) scramble(count, String(shown).padStart(2, "0"));
+}
+// quick digit-scramble so the count visibly updates
+let scrambleTimer;
+function scramble(el, finalText) {
+  clearInterval(scrambleTimer);
+  if (reduceMotion) { el.textContent = finalText; return; }
+  let n = 0;
+  scrambleTimer = setInterval(() => {
+    n++;
+    el.textContent = n > 6 ? finalText
+      : finalText.replace(/\d/g, () => Math.floor(Math.random() * 10));
+    if (n > 6) clearInterval(scrambleTimer);
+  }, 45);
 }
 filters.forEach((f) => f.addEventListener("click", () => applyFilter(f.dataset.filter)));
 if (cards.length) applyFilter("all");
