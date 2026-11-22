@@ -403,3 +403,21 @@ a { color: inherit; }
   .about__photo .stairs { left: -16px; }
 }
 @media print { .stairs { display: none !important; } }
+
+/* ---------- Pause / play motion button ---------- */
+.motion-toggle {
+  position: absolute; z-index: 5; top: 14px; right: 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--pixel); font-size: 12px; cursor: pointer;
+  padding: 8px 12px; background: #fff; color: var(--ink);
+  border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+}
+.motion-toggle:hover { background: var(--lime); }
+.motion-toggle:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.motion-toggle[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.motion-toggle[aria-pressed="true"]:hover { background: #333; }
+.motion-toggle__icon { font-size: 10px; letter-spacing: -2px; }
+/* the contact grid's corner already has stairs, so sit the button bottom-right there */
+.contact .motion-toggle { top: auto; bottom: 14px; }
+@media (max-width: 700px) { .motion-toggle { top: auto; bottom: 10px; right: 10px; font-size: 11px; padding: 6px 10px; } }
+@media print { .motion-toggle { display: none !important; } }
