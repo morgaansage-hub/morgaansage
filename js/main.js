@@ -18,42 +18,55 @@ function noise(x, y, t) {
   ) / 2.15;
 }
 
+const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+
 document.querySelectorAll("[data-field]").forEach((section) => {
   const canvas = document.createElement("canvas");
   canvas.setAttribute("aria-hidden", "true");
   section.prepend(canvas);
   section.classList.add("has-canvas");
   const ctx = canvas.getContext("2d");
-  let w, h, cols, rows, dpr, t = Math.random() * 100, visible = true;
-  const mouse = { x: -999, y: -999 };
+  const gridLayer = document.createElement("canvas"); // grid lines drawn once, reused every frame
+  const gctx = gridLayer.getContext("2d");
+  let w, h, cols, rows, dpr, t = Math.random() * 100, visible = true, lastTs = 0;
+  const target = { x: -9999, y: -9999 };   // where the cursor is
+  const mouse = { x: -9999, y: -9999 };    // eased position that follows it
+  let glow = 0, glowTarget = 0;            // fades the cursor effect in/out
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = section.clientWidth; h = section.clientHeight;
-    canvas.width = w * dpr; canvas.height = h * dpr;
+    for (const c of [canvas, gridLayer]) { c.width = w * dpr; c.height = h * dpr; }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cols = Math.ceil(w / CELL); rows = Math.ceil(h / CELL);
+    gctx.clearRect(0, 0, w, h);
+    gctx.strokeStyle = BLUE; gctx.globalAlpha = 0.9; gctx.lineWidth = 1;
+    gctx.beginPath();
+    for (let c = 0; c <= cols; c++) { gctx.moveTo(c * CELL + 0.5, 0); gctx.lineTo(c * CELL + 0.5, h); }
+    for (let r = 0; r <= rows; r++) { gctx.moveTo(0, r * CELL + 0.5); gctx.lineTo(w, r * CELL + 0.5); }
+    gctx.stroke();
     draw();
   }
 
+  const RADIUS = 150;
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    // grid lines
-    ctx.strokeStyle = BLUE; ctx.globalAlpha = 0.9; ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let c = 0; c <= cols; c++) { ctx.moveTo(c * CELL + 0.5, 0); ctx.lineTo(c * CELL + 0.5, h); }
-    for (let r = 0; r <= rows; r++) { ctx.moveTo(0, r * CELL + 0.5); ctx.lineTo(w, r * CELL + 0.5); }
-    ctx.stroke();
-    // filled "cloud" squares + cursor glow
+    ctx.globalAlpha = 1;
+    ctx.drawImage(gridLayer, 0, 0, w, h);
     ctx.fillStyle = BLUE;
     for (let c = 0; c < cols; c++) {
       for (let r = 0; r < rows; r++) {
         const x = c * CELL, y = r * CELL;
         let n = noise(c * 1.6, r * 1.6, t);
-        const d = Math.hypot(x - mouse.x, y - mouse.y);
-        if (d < 120) n += (1 - d / 120) * 0.6;
-        if (n > THRESHOLD) {
-          ctx.globalAlpha = Math.min(1, 0.35 + (n - THRESHOLD) * 1.6);
+        if (glow > 0.001) {
+          const d = Math.hypot(x + CELL / 2 - mouse.x, y + CELL / 2 - mouse.y);
+          if (d < RADIUS) n += smooth(RADIUS, 0, d) * 0.75 * glow;
+        }
+        // soft edge instead of on/off: squares fade in as the value rises
+        const a = smooth(THRESHOLD - 0.12, THRESHOLD + 0.45, n);
+        if (a > 0.02) {
+          ctx.globalAlpha = a;
           ctx.fillRect(x + 2, y + 2, CELL - 3, CELL - 3);
         }
       }
@@ -61,23 +74,31 @@ document.querySelectorAll("[data-field]").forEach((section) => {
     ctx.globalAlpha = 1;
   }
 
-  let last = 0;
   function loop(ts) {
-    if (visible && ts - last > 90) { t += 0.035; draw(); last = ts; }
+    const dt = Math.min(50, ts - (lastTs || ts)); lastTs = ts;
+    if (visible) {
+      if (!reduceMotion) t += dt * 0.00035;                 // slow, continuous drift
+      const k = 1 - Math.pow(0.001, dt / 1000);             // frame-rate independent easing
+      mouse.x += (target.x - mouse.x) * Math.min(1, k * 6);
+      mouse.y += (target.y - mouse.y) * Math.min(1, k * 6);
+      glow += (glowTarget - glow) * Math.min(1, k * 3);
+      draw();
+    }
     requestAnimationFrame(loop);
   }
 
   section.addEventListener("pointermove", (e) => {
     const r = section.getBoundingClientRect();
-    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-    if (reduceMotion) draw();
+    target.x = e.clientX - r.left; target.y = e.clientY - r.top;
+    if (glow < 0.01) { mouse.x = target.x; mouse.y = target.y; } // don't swoop in from a corner
+    glowTarget = 1;
   });
-  section.addEventListener("pointerleave", () => { mouse.x = mouse.y = -999; if (reduceMotion) draw(); });
+  section.addEventListener("pointerleave", () => { glowTarget = 0; });
 
   new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(section);
   new ResizeObserver(resize).observe(section);
   resize();
-  if (!reduceMotion) requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 });
 
 // =========================================================
