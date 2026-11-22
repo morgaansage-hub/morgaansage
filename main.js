@@ -13,6 +13,7 @@ try { const saved = localStorage.getItem("motion"); if (saved !== null) motionOn
 const motionButtons = [];
 function setMotion(on) {
   motionOn = on;
+  document.documentElement.classList.toggle("motion-off", !on);
   try { localStorage.setItem("motion", on ? "on" : "off"); } catch (e) {}
   motionButtons.forEach((b) => {
     b.setAttribute("aria-pressed", String(!on));
